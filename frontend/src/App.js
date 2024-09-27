@@ -1,9 +1,10 @@
+import Countries from "./components/Countries";
 import Notes from "./components/Notes";
 
 function App() {
   return (
     <div className="App">
-      <Notes />
+      <Countries />
     </div>
   );
 }
