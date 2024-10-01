@@ -1,8 +1,9 @@
 import Countries from "./components/Countries";
 import Notes from "./components/Notes";
+// samuelmmanor tYxCEKnjWiaamRnq
 
 function App() {
-  return <div>app</div>;
+  return <Notes />;
 }
 
 export default App;
