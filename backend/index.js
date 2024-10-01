@@ -7,6 +7,16 @@ app.use(express.json());
 const cors = require("cors");
 app.use(cors());
 
+const requestLogger = (request, response, next) => {
+  console.log("Method:", request.method);
+  console.log("Path:  ", request.path);
+  console.log("Body:  ", request.body);
+  console.log("---");
+  next();
+};
+
+app.use(requestLogger);
+
 let notes = [
   {
     id: "1",
@@ -52,6 +62,17 @@ app.get("/api/notes/:id", (request, response) => {
   } else {
     response.status(404).end();
   }
+});
+
+app.put("/api/notes/:id", (request, response) => {
+  const id = request.params.id;
+  // const updatedNotes = notes.forEach((note) =>
+  //   note.id === id ? request.body : note
+  // );
+  // notes = updatedNotes;
+  // response.json(request.body);
+  notes = notes.map((note) => (note.id === id ? request.body : note));
+  response.json(request.body);
 });
 
 app.delete("/api/notes/:id", (request, response) => {

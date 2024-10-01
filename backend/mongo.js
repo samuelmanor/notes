@@ -9,7 +9,7 @@ const mongoose = require("mongoose");
 
 const url = `mongodb+srv://samuelmmanor:tYxCEKnjWiaamRnq@cluster0.mgv9n.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
-mongoose.set("strictQuery", false);
+mongoose.set("strictQuery", false); // p3c
 
 mongoose.connect(url);
 
