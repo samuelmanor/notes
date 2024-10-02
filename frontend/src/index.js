@@ -4,10 +4,16 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
-import { createStore } from "redux";
+import { combineReducers, createStore } from "redux";
 import noteReducer from "./reducers/noteReducer";
+import filterReducer from "./reducers/filterReducer";
 
-const store = createStore(noteReducer);
+const reducer = combineReducers({
+  notes: noteReducer,
+  filter: filterReducer,
+});
+
+const store = createStore(reducer);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
