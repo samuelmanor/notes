@@ -63,10 +63,10 @@ const VisibilityFilter = (props) => {
 
 function NotesRedux() {
   const notes = useSelector((state) => {
-    if (state.filter === "ALL") {
+    if (state.filter.view === "ALL") {
       return state.notes;
     }
-    return state.filter === "IMPORTANT"
+    return state.filter.view === "IMPORTANT"
       ? state.notes.filter((note) => note.important)
       : state.notes.filter((note) => !note.important);
   });

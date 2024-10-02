@@ -7,13 +7,14 @@ import { Provider } from "react-redux";
 import { combineReducers, createStore } from "redux";
 import noteReducer from "./reducers/noteReducer";
 import filterReducer from "./reducers/filterReducer";
+import { configureStore } from "@reduxjs/toolkit";
 
-const reducer = combineReducers({
-  notes: noteReducer,
-  filter: filterReducer,
+const store = configureStore({
+  reducer: {
+    notes: noteReducer,
+    filter: filterReducer,
+  },
 });
-
-const store = createStore(reducer);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
