@@ -87,7 +87,7 @@ function Notes() {
       });
   };
 
-  console.log("render", notes.length, "notes");
+  // console.log("render", notes.length, "notes");
 
   return (
     <div className="App">
