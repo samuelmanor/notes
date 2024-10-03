@@ -4,10 +4,9 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
-import { combineReducers, createStore } from "redux";
-import noteReducer from "./reducers/noteReducer";
 import filterReducer from "./reducers/filterReducer";
 import { configureStore } from "@reduxjs/toolkit";
+import noteReducer from "./reducers/noteReducer";
 
 const store = configureStore({
   reducer: {

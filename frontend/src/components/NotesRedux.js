@@ -1,15 +1,23 @@
 import { filterChange } from "../reducers/filterReducer";
-import { createNote, toggleImportanceOf } from "../reducers/noteReducer";
+import {
+  createNote,
+  toggleImportanceOf,
+  setNotes,
+} from "../reducers/noteReducer";
 import { useDispatch, useSelector } from "react-redux";
+import noteService from "../services/notes";
+import { useEffect } from "react";
 
 const NewNote = () => {
   const dispatch = useDispatch();
 
-  const addNote = (event) => {
+  const addNote = async (event) => {
     event.preventDefault();
     const content = event.target.note.value;
     event.target.note.value = "";
-    dispatch(createNote(content));
+    // dispatch(createNote(content));
+    const newNote = await noteService.createNew(content);
+    dispatch(createNote(newNote));
   };
 
   return (
@@ -22,17 +30,26 @@ const NewNote = () => {
 
 const Note = ({ note }) => {
   const dispatch = useDispatch();
+
+  const toggleImportance = async () => {
+    await noteService.update(note.id, {
+      ...note,
+      important: !note.important,
+    });
+    dispatch(toggleImportanceOf(note.id));
+  };
+
   return (
     <li>
       <p>{note.content}</p>
-      <button onClick={() => dispatch(toggleImportanceOf(note.id))}>
+      <button onClick={() => toggleImportance()}>
         {note.important ? "important" : "not important"}
       </button>
     </li>
   );
 };
 
-const VisibilityFilter = (props) => {
+const VisibilityFilter = () => {
   const dispatch = useDispatch();
 
   return (
@@ -62,6 +79,12 @@ const VisibilityFilter = (props) => {
 };
 
 function NotesRedux() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    noteService.getAll().then((notes) => dispatch(setNotes(notes)));
+  });
+
   const notes = useSelector((state) => {
     if (state.filter.view === "ALL") {
       return state.notes;
