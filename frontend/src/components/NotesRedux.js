@@ -1,8 +1,10 @@
 import { filterChange } from "../reducers/filterReducer";
 import {
-  createNote,
+  // createNote,
   toggleImportanceOf,
-  setNotes,
+  initializeNotes,
+  createNote,
+  updateNote,
 } from "../reducers/noteReducer";
 import { useDispatch, useSelector } from "react-redux";
 import noteService from "../services/notes";
@@ -16,8 +18,9 @@ const NewNote = () => {
     const content = event.target.note.value;
     event.target.note.value = "";
     // dispatch(createNote(content));
-    const newNote = await noteService.createNew(content);
-    dispatch(createNote(newNote));
+    // const newNote = await noteService.createNew(content);
+    // dispatch(createNote(newNote));
+    dispatch(createNote(content));
   };
 
   return (
@@ -32,11 +35,16 @@ const Note = ({ note }) => {
   const dispatch = useDispatch();
 
   const toggleImportance = async () => {
-    await noteService.update(note.id, {
+    // await noteService.update(note.id, {
+    //   ...note,
+    //   important: !note.important,
+    // });
+    const updatedNote = {
       ...note,
       important: !note.important,
-    });
-    dispatch(toggleImportanceOf(note.id));
+    };
+    // dispatch(toggleImportanceOf(note.id));
+    dispatch(updateNote(note.id, updatedNote));
   };
 
   return (
@@ -82,8 +90,8 @@ function NotesRedux() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    noteService.getAll().then((notes) => dispatch(setNotes(notes)));
-  });
+    dispatch(initializeNotes());
+  }, []);
 
   const notes = useSelector((state) => {
     if (state.filter.view === "ALL") {
@@ -94,6 +102,10 @@ function NotesRedux() {
       : state.notes.filter((note) => !note.important);
   });
 
+  useEffect(() => {
+    console.log(notes);
+  }, [notes]);
+
   return (
     <div>
       <NewNote />
@@ -101,6 +113,7 @@ function NotesRedux() {
       <ul>
         {notes.map((note) => (
           <Note key={note.id} note={note} />
+          // <div onClick={() => console.log(note)}>penis</div>
         ))}
       </ul>
     </div>
