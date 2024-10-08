@@ -58,12 +58,13 @@ type Mutation {
     street: String!
     city: String!
   ): Person
-  editNumber(
-    name: String!
-    phone: String!
-  ): Person
 }
 `;
+
+// editNumber(
+//   name: String!
+//   phone: String!
+// ): Person
 
 const resolvers = {
   Query: {
@@ -102,16 +103,16 @@ const resolvers = {
       return person;
     },
   },
-  editNumber: (root, args) => {
-    const person = persons.find((p) => p.name === args.name);
-    if (!person) {
-      return null;
-    }
+  // editNumber: (root, args) => {
+  //   const person = persons.find((p) => p.name === args.name);
+  //   if (!person) {
+  //     return null;
+  //   }
 
-    const updatedPerson = { ...person, phone: args.phone };
-    persons = persons.map((p) => (p.name === args.name ? updatedPerson : p));
-    return updatedPerson;
-  },
+  //   const updatedPerson = { ...person, phone: args.phone };
+  //   persons = persons.map((p) => (p.name === args.name ? updatedPerson : p));
+  //   return updatedPerson;
+  // },
 };
 
 const server = new ApolloServer({
