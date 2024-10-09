@@ -1,48 +1,50 @@
-import { gql, useQuery, useMutation } from "@apollo/client";
-import { useState } from "react";
+import { useQuery, useMutation } from "@apollo/client";
+import { useEffect, useState } from "react";
+import {
+  ALL_PERSONS,
+  FIND_PERSON,
+  CREATE_PERSON,
+  EDIT_NUMBER,
+} from "../services/queries";
 
-const ALL_PERSONS = gql`
-  query {
-    allPersons {
-      name
-      phone
-      id
-    }
-  }
-`;
+const PhoneForm = ({ setError }) => {
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
 
-const FIND_PERSON = gql`
-  query findPersonByName($nameToSearch: String!) {
-    findPerson(name: $nameToSearch) {
-      name
-      phone
-      id
-      address {
-        street
-        city
-      }
-    }
-  }
-`;
+  const [changeNumber, result] = useMutation(EDIT_NUMBER);
 
-const CREATE_PERSON = gql`
-  mutation createPerson(
-    $name: String!
-    $street: String!
-    $city: String!
-    $phone: String
-  ) {
-    addPerson(name: $name, street: $street, city: $city, phone: $phone) {
-      name
-      phone
-      id
-      address {
-        street
-        city
-      }
+  const submit = (event) => {
+    event.preventDefault();
+
+    changeNumber({ variables: { name, phone } });
+
+    setName("");
+    setPhone("");
+  };
+
+  useEffect(() => {
+    if (result.data && result.data.editNumber === null) {
+      setError("person not found");
     }
-  }
-`;
+  }, [result.data]);
+
+  return (
+    <div>
+      <h2>change number</h2>
+
+      <form onSubmit={submit}>
+        name
+        <input value={name} onChange={({ target }) => setName(target.value)} />
+        phone
+        <input
+          value={phone}
+          onChange={({ target }) => setPhone(target.value)}
+        />
+        <button type="submit">change number</button>
+      </form>
+    </div>
+  );
+};
 
 const Person = ({ person, onClose }) => {
   return (
@@ -86,7 +88,7 @@ const Persons = ({ persons }) => {
   );
 };
 
-const PersonForm = () => {
+const PersonForm = ({ setError }) => {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [street, setStreet] = useState("");
@@ -94,6 +96,10 @@ const PersonForm = () => {
 
   const [createPerson] = useMutation(CREATE_PERSON, {
     refetchQueries: [{ query: ALL_PERSONS }],
+    onError: (error) => {
+      const messages = error.graphQLErrors.map((e) => e.message).join("\n");
+      setError(messages);
+    },
   });
 
   const submit = (event) => {
@@ -145,17 +151,35 @@ const PersonForm = () => {
   );
 };
 
+const Notify = ({ errorMessage }) => {
+  if (!errorMessage) {
+    return null;
+  }
+
+  return <div style={{ color: "red" }}>{errorMessage}</div>;
+};
+
 const PhonebookGraphQL = () => {
+  const [errorMessage, setErrorMessage] = useState(null);
   const result = useQuery(ALL_PERSONS);
 
   if (result.loading) {
     return <div>loading...</div>;
   }
 
+  const notify = (message) => {
+    setErrorMessage(message);
+    setTimeout(() => {
+      setErrorMessage(null);
+    }, 10000);
+  };
+
   return (
     <div>
+      <Notify errorMessage={errorMessage} />
       <Persons persons={result.data.allPersons} />
-      <PersonForm />
+      <PersonForm setError={notify} />
+      <PhoneForm setError={notify} />
     </div>
   );
 };
