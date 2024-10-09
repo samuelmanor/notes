@@ -129,13 +129,12 @@ const typeDefs = `
       published: Int
       genres: [String]
     ): Book
+    editAuthor(
+      name: String!
+      setBornTo: Int!
+    ): Author
   }
 `;
-
-// editAuthor(
-//   name: String!
-//   setBornTo: Int!
-// ): Author
 
 const resolvers = {
   Query: {
@@ -179,14 +178,14 @@ const resolvers = {
       }
       return book;
     },
+    editAuthor: (root, args) => {
+      const author = authors.find((author) => author.name == args.name);
+      if (author) {
+        author.born = args.setBornTo;
+      }
+      return author;
+    },
   },
-  // editAuthor: (root, args) => {
-  //   const author = authors.find((author) => author.name == args.name);
-  //   if (author) {
-  //     author.born = args.setBornTo;
-  //   }
-  //   return author;
-  // },
 };
 
 const server = new ApolloServer({
