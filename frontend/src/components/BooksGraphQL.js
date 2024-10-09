@@ -45,8 +45,16 @@ const Books = (props) => {
 };
 
 const NewAuthor = () => {
-  const [name, setName] = useState("");
-  const [year, setYear] = useState(0);
+  const allAuthors = useQuery(ALL_AUTHORS);
+  const [authors, setAuthors] = useState([]);
+  const [selectedAuthor, setSelectedAuthor] = useState("");
+  const [year, setYear] = useState("");
+
+  useEffect(() => {
+    if (allAuthors.data.allAuthors) {
+      setAuthors(allAuthors.data.allAuthors.map((author) => author.name));
+    }
+  }, [allAuthors]);
 
   const [editAuthor, result] = useMutation(EDIT_AUTHOR, {
     onError: (error) => {
@@ -55,28 +63,35 @@ const NewAuthor = () => {
     refetchQueries: [{ query: ALL_AUTHORS }],
   });
 
-  const submit = (event) => {
-    event.preventDefault();
-
-    editAuthor({ variables: { name, setBornTo: parseInt(year) } });
+  const submit = () => {
+    editAuthor({
+      variables: { name: selectedAuthor, setBornTo: parseInt(year) },
+    });
   };
-
-  useEffect(() => {
-    if (result.data && result.data.editAuthor === null) {
-      console.log("author not found");
-    }
-  }, [result.data]);
 
   return (
     <div>
-      <h3>set birthyear</h3>
-      <form onSubmit={submit}>
-        name
-        <input value={name} onChange={({ target }) => setName(target.value)} />
-        year
-        <input value={year} onChange={({ target }) => setYear(target.value)} />
-        <button type="submit">update author</button>
-      </form>
+      <h3 onClick={() => console.log(selectedAuthor)}>set birthyear</h3>
+      <select
+        name="authors"
+        id="authors-select"
+        onChange={({ target }) => setSelectedAuthor(target.value)}
+      >
+        <option>-</option>
+        {authors.map((author) => {
+          return <option value={author}>{author}</option>;
+        })}
+      </select>
+      <br />
+      year
+      <input value={year} onChange={({ target }) => setYear(target.value)} />
+      <br />
+      <button
+        style={{ display: selectedAuthor !== "-" && year ? "" : "none" }}
+        onClick={submit}
+      >
+        update author
+      </button>
     </div>
   );
 };
