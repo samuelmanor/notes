@@ -8,8 +8,8 @@ import PhonebookGraphQL from "./components/PhonebookGraphQL";
 
 function App() {
   // return <PhonebookGraphQL />;
-  // return <BooksGraphQL />;
-  return <Notes />;
+  return <BooksGraphQL />;
+  // return <Notes />;
 }
 
 export default App;

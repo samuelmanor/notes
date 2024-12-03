@@ -4,12 +4,13 @@ const Person = require("./models/person");
 
 require("dotenv").config();
 
-const MONGODB_URI = `mongodb+srv://samuelmmanor:tYxCEKnjWiaamRnq@cluster0.mgv9n.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+// const MONGODB_URI = `mongodb+srv://samuelmmanor:${password}@cluster0.ysn4z.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+const url = process.env.MONGODB_URI;
 
-console.log("connecting to", MONGODB_URI);
+console.log("connecting to", url);
 
 mongoose
-  .connect(MONGODB_URI)
+  .connect(url)
   .then(() => {
     console.log("connected to mongodb");
   })
